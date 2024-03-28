@@ -13,6 +13,14 @@ import store from './store'
 import router from './router'
 import directive from './directive' // directive
 
+// 引入Tailwindcss
+import 'tailwindcss/components.css'
+import 'tailwindcss/utilities.css'
+import './assets/css/tailwind.css'
+
+
+
+
 // 注册指令
 import plugins from './plugins' // plugins
 import { download } from '@/utils/request'
@@ -43,6 +51,8 @@ import ImagePreview from "@/components/ImagePreview"
 import TreeSelect from '@/components/TreeSelect'
 // 字典标签组件
 import DictTag from '@/components/DictTag'
+
+
 
 const app = createApp(App)
 
