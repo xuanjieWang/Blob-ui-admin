@@ -8,20 +8,20 @@
       <el-form-item label="文章封面" prop="image" align="left">
         <el-upload
           class="upload-demo"
-          style="width: 300px; height: 300px"
-          ref="uploadRef"
-          drag
-          action="https://run.mocky.io/v3/9d059bf9-4660-45f2-925d-ce80ad6c4d15"
-          multiple
+          style="width: 300px; height: 30px"
+          action="#"
+          :http-request="requestUpload"
+          :show-file-list="false"
+          :before-upload="beforeUpload"
           limit="1">
           <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-          <div class="el-upload__text">选择图片进行上传</div>
-          <template #tip>
-            <div class="el-upload__tip">jpg/png 图片最多1MB</div>
-          </template>
+          <div class="el-upload__text">点击文字选择图片进行上传</div>
         </el-upload>
       </el-form-item>
-      <el-form-item label="文章类型" prop="type" align="left" style="width: 400px">
+      <el-col :xs="24" :md="12" style="height: 100px; width: 300px; margin-left: 50px">
+        <img :src="form.image" />
+      </el-col>
+      <el-form-item label="文章类型" prop="type" align="left" style="width: 400px; margin-top: 100px">
         <el-select v-model="form.type" placeholder="请选择" clearable style="width: 180px; margin-bottom: 0">
           <el-option v-for="dict in the_blog_type" :key="dict.value" :label="dict.label" :value="dict.value" />
         </el-select>
@@ -53,8 +53,6 @@ const data = reactive({
 })
 const { form } = toRefs(data)
 
-const uploadRef = ref(null)
-
 const vditor = ref('')
 const value = ref('')
 const unwatch = ref(null)
@@ -82,15 +80,29 @@ const getValue = () => {
 }
 
 const submit = async () => {
-  console.log(uploadRef.value)
-  // form.value.text = getValue()
-  //   console.log(form.value);
-  // proxy.$refs['formData'].validate(async (valid) => {
-  //   if (!valid) return
-  //   addBlog(form.value).then(
-  //   proxy.$modal.msgSuccess("新增博客成功！")
-  //   )
-  // })
+  console.log(form.value)
+  form.value.text = getValue()
+  proxy.$refs['formData'].validate(async (valid) => {
+    if (!valid) return
+    addBlog(form.value).then(proxy.$modal.msgSuccess('新增博客成功！'))
+  })
+}
+
+/** 覆盖默认上传行为 */
+function requestUpload() {}
+
+/** 上传预处理 */
+function beforeUpload(file) {
+  if (file.type.indexOf('image/') == -1) {
+    proxy.$modal.msgError('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。')
+  } else {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+      form.value.image = reader.result
+      form.value.imageUrl = file.name
+    }
+  }
 }
 </script>
 
