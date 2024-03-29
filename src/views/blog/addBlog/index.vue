@@ -84,7 +84,7 @@ const submit = async () => {
   form.value.text = getValue()
   proxy.$refs['formData'].validate(async (valid) => {
     if (!valid) return
-    addBlog(form.value).then(proxy.$modal.msgSuccess('新增博客成功！'))
+    addBlog(form.value).then(proxy.$modal.msgSuccess('新增博客成功！！'))
   })
 }
 
